@@ -8,6 +8,8 @@ import { Input } from "./ui/input";
 import { useTransition } from "react";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { loginAction, signUpAction } from "@/actions/user";
 
 type Props = {
   type: "login" | "signUp";
@@ -21,7 +23,34 @@ function AuthForm({ type }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = (formData: FormData) => {
-    console.log("form submitted");
+    startTransition(async () => {
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+
+      let errorMessage;
+      let title;
+      let description;
+      if (isLoginForm) {
+        errorMessage = (await loginAction(email, password)).errorMessage;
+        title = "Logged in";
+        description = "You have been successfully logged in";
+      } else {
+        errorMessage = (await signUpAction(email, password)).errorMessage;
+        title = "Signed up";
+        description = "Check your email for a confirmation link";
+      }
+
+      if (!errorMessage) {
+        toast.success(title, {
+          description,
+        });
+        router.replace("/");
+      } else {
+        toast.error("Error", {
+          description: errorMessage,
+        });
+      }
+    });
   };
   return (
     <form action={handleSubmit}>
@@ -49,8 +78,8 @@ function AuthForm({ type }: Props) {
           />
         </div>
       </CardContent>
-      <CardFooter>
-        <Button>
+      <CardFooter className="mt-4 flex flex-col gap-6">
+        <Button className="w-full">
           {isPending ? (
             <Loader2 className="animate-spin" />
           ) : isLoginForm ? (
@@ -59,6 +88,17 @@ function AuthForm({ type }: Props) {
             "Sign Up"
           )}
         </Button>
+        <p className="text-xs">
+          {isLoginForm
+            ? "Don't have an account yet?"
+            : "Already have an account?"}{" "}
+          <Link
+            href={isLoginForm ? "/sign-up" : "/login"}
+            className={`text-blue-500 underline ${isPending ? "pointer-events-none opacity-50" : ""}`}
+          >
+            {isLoginForm ? "Sign Up" : "Login"}
+          </Link>
+        </p>
       </CardFooter>
     </form>
   );
