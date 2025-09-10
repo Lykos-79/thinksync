@@ -217,15 +217,11 @@ Please include unit or integration tests for new features.
 
 ## License
 
-Specify your chosen license here (e.g., MIT). If unsure, add a `LICENSE` file and link it.
+MIT
 
 ---
 
 ## Contact
 
-Your Name — `youremail@example.com`
+Your Name — `kumarabhisekh0111@gmail.com`
 Project: ThinkSync
-
----
-
-_This README is a starter template — I can add badges, GIFs/screenshots, CI steps, or a shorter one-line project blurb for your GitHub repo if you want._
